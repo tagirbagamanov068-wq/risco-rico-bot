@@ -27,7 +27,7 @@ def start_message(message):
 @bot.callback_query_handler(func=lambda call: call.data == "st_audit")
 def step_1(call):
     chat_id = call.message.chat.id
-    bot.delete_message(chat_id, call.message.message_id) # ТА САМАЯ АНИМАЦИЯ РАСПЫЛЕНИЯ
+    bot.delete_message(chat_id, call.message.message_id)
     
     markup = types.InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -43,7 +43,7 @@ def step_2(call):
     user_data[chat_id] = {}
     user_data[chat_id]['reg'] = "ИП уже открыто" if call.data == "u_yes" else "Требуется открытие с нуля"
     
-    bot.delete_message(chat_id, call.message.message_id) # Сообщение плавно сгорает
+    bot.delete_message(chat_id, call.message.message_id)
     
     markup = types.InlineKeyboardMarkup(row_width=1)
     markup.add(
@@ -54,7 +54,8 @@ def step_2(call):
     bot.send_message(chat_id, "<b>💼 Шаг 2 из 5. Выберите ваше направление:</b>", parse_mode="HTML", reply_markup=markup)
 
 # ШАГ 3: ПЛАТЕЖКИ
-@bot.callback_query_handler(func=lambda call: call.data in ["n_mp", "n_rt", "n_op"]):
+@bot.callback_query_handler(func=lambda call: call.data in ["n_mp", "n_rt", "n_op"])
+def step_3(call):
     chat_id = call.message.chat.id
     niche_map = {"n_mp": "Маркетплейсы", "n_rt": "Розница", "n_op": "Опт / B2B"}
     user_data[chat_id]['niche'] = niche_map[call.data]
@@ -70,7 +71,8 @@ def step_2(call):
     bot.send_message(chat_id, "<b>🧾 Шаг 3 из 5. Сколько платежных поручений поставщикам отправляете в месяц?</b>", parse_mode="HTML", reply_markup=markup)
 
 # ШАГ 4: ВЫРУЧКА
-@bot.callback_query_handler(func=lambda call: call.data in ["p_10", "p_50", "p_max"]):
+@bot.callback_query_handler(func=lambda call: call.data in ["p_10", "p_50", "p_max"])
+def step_4(call):
     chat_id = call.message.chat.id
     p_map = {"p_10": "До 10 шт", "p_50": "11-50 шт", "p_max": "Более 50 шт"}
     user_data[chat_id]['payments'] = p_map[call.data]
@@ -87,7 +89,8 @@ def step_2(call):
     bot.send_message(chat_id, "<b>💵 Шаг 4 из 5. Какой планируемый оборот (выручка) в месяц?</b>", parse_mode="HTML", reply_markup=markup)
 
 # ШАГ 5: ВЫВОД НА КАРТУ
-@bot.callback_query_handler(func=lambda call: call.data in ["o_300", "o_1m", "o_max"]):
+@bot.callback_query_handler(func=lambda call: call.data in ["o_300", "o_1m", "o_max"])
+def step_5(call):
     chat_id = call.message.chat.id
     o_map = {"o_300": "До 300к", "o_1m": "300к - 1млн", "o_max": "Более 1млн"}
     user_data[chat_id]['volume'] = o_map[call.data]
@@ -104,11 +107,11 @@ def step_2(call):
     bot.send_message(chat_id, "<b>💸 Шаг 5 из 5. Сколько из этой суммы нужно выводить себе на личную карту каждый месяц?</b>", parse_mode="HTML", reply_markup=markup)
 
 # ФИНАЛ И ПЕРЕХВАТ ЛИДА К CEO RR
-@bot.callback_query_handler(func=lambda call: call.data in ["w_150", "w_500", "w_max"]):
+@bot.callback_query_handler(func=lambda call: call.data in ["w_150", "w_500", "w_max"])
+def final_step(call):
     chat_id = call.message.chat.id
     bot.delete_message(chat_id, call.message.message_id)
     
-    # Математика скрытого ущерба
     loss_p = 0 if user_data[chat_id].get('p_raw') == "p_10" else (2500 if user_data[chat_id].get('p_raw') == "p_50" else 6000)
     loss_w = 0 if call.data == "w_150" else (4500 if call.data == "w_500" else 15000)
     total_loss = loss_p + loss_w + (5000 if user_data[chat_id].get('o_raw') == "o_max" else 1500)
@@ -118,7 +121,6 @@ def step_2(call):
     
     username = f"@{call.from_user.username}" if call.from_user.username else "Скрыт"
     
-    # ОТЧЕТ СТРОГО ДЛЯ CEO RR
     admin_text = (
         "<b>🔥 CEO RR, У КОНКУРЕНТОВ НЕТ ШАНСОВ! ПОЛНЫЙ АУДИТ ГОТОВ:</b>\n\n"
         f"👤 <b>Лид:</b> {call.from_user.first_name} ({username})\n"
