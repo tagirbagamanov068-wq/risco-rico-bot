@@ -2,7 +2,7 @@ import telebot
 from telebot import types
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
-TOKEN = "8163900282:AAEfd9adAE1I_vI046XqsdtTZGDfOf"
+TOKEN = "8639002029:AAGFm-qisYTmnnWt9ULjJsOKFUBw58C1GWI"
 ADMIN_ID = "8713500528"
 
 bot = telebot.TeleBot(TOKEN)
