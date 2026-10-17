@@ -1,3 +1,4 @@
+import os
 import telebot
 from telebot import types
 import threading
@@ -13,7 +14,6 @@ def run_dummy_server():
             self.wfile.write(b"RISCO RICO FINTECH LIVE")
     
     # Render всегда дает порт в переменную окружения, если её нет - берем 10000
-    import os
     port = int(os.environ.get("PORT", 10000))
     with socketserver.TCPServer(("", port), DummyHandler) as httpd:
         httpd.serve_forever()
