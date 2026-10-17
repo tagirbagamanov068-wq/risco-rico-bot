@@ -1,5 +1,25 @@
 import telebot
 from telebot import types
+import threading
+import http.server
+import socketserver
+
+def run_dummy_server():
+    class DummyHandler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header("Content-type", "text/html")
+            self.end_headers()
+            self.wfile.write(b"RISCO RICO FINTECH LIVE")
+    
+    # Render всегда дает порт в переменную окружения, если её нет - берем 10000
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    with socketserver.TCPServer(("", port), DummyHandler) as httpd:
+        httpd.serve_forever()
+
+# Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
+threading.Thread(target=run_dummy_server, daemon=True).start()
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
 TOKEN = "8639002029:AAGFm-qisYTmnnWt9ULjJsOKFUBw58C1GWI"
@@ -138,7 +158,7 @@ def final_step(call):
         print(f"Ошибка админа: {e}")
 
     client_text = (
-        f"<b>🎯 Интерактивный анонимный аудит Risco Rico завершен!</b>\n\n"
+        f"<b>🎯 Интерактивный аудит Risco Rico завершен!</b>\n\n"
         f"По нашей базе ТОП-15 банков РФ, при ваших оборотах (<b>{user_data[chat_id]['volume']}</b>) и объеме платежек, скрытые комиссии могут обходиться вам примерно в <b>{total_loss} ₽ в месяц</b> за пустые услуги.\n\n"
         "⏱ <b>В течение 5 минут</b> команда Risco Rico изучит эти цифры и пришлет вам в личку независимую раскладку: в каком банке вам дадут максимальные лимиты без комиссий.\n\n"
         "<i>Вы в системе. Хватит переплачивать банкирам за воздух!</i>"
