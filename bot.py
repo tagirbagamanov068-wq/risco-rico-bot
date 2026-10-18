@@ -8,18 +8,20 @@ import socketserver
 def run_dummy_server():
     class DummyHandler(http.server.SimpleHTTPRequestHandler):
         def do_GET(self):
+def run_dummy_server():
+    class DummyHandler(http.server.SimpleHTTPRequestHandler):
+        def do_GET(self):
             self.send_response(200)
             self.send_header("Content-type", "text/html")
             self.end_headers()
             self.wfile.write(b"RISCO RICO FINTECH LIVE")
     
-  # Render всегда дает порт в переменную окружения, если её нет - берем 10000
-import os
-port = int(os.environ.get("PORT", 10000))
+    import os
+    port = int(os.environ.get("PORT", 10000))
+    socketserver.TCPServer.allow_reuse_address = True
+    with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
+        httpd.serve_forever()
 
-socketserver.TCPServer.allow_reuse_address = True
-with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
-                         httpd.serve_forever()
 # Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
