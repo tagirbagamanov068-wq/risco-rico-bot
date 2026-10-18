@@ -5,25 +5,7 @@ import threading
 import http.server
 import socketserver
 
-def run_dummy_server():
-    class DummyHandler(http.server.SimpleHTTPRequestHandler):
-        def do_GET(self):
-def run_dummy_server():
-    class DummyHandler(http.server.SimpleHTTPRequestHandler):
-        def do_GET(self):
-            self.send_response(200)
-            self.send_header("Content-type", "text/html")
-            self.end_headers()
-            self.wfile.write(b"RISCO RICO FINTECH LIVE")
-    
-    import os
-    port = int(os.environ.get("PORT", 10000))
-    socketserver.TCPServer.allow_reuse_address = True
-    with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
-        httpd.serve_forever()
-
-# Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
-threading.Thread(target=run_dummy_server, daemon=True).start()
+import os, http.server, socketserver, threading; threading.Thread(target=lambda: socketserver.TCPServer(("0.0.0.0", int(os.environ.get("PORT", 10000))), http.server.SimpleHTTPRequestHandler).serve_forever(), daemon=True).start()
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
 TOKEN = "8639002029:AAGFm-qisYTmnnWt9ULjJsOKFUBw58C1GWI"
