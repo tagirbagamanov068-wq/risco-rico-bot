@@ -13,11 +13,14 @@ def run_dummy_server():
             self.end_headers()
             self.wfile.write(b"RISCO RICO FINTECH LIVE")
     
-    # Render всегда дает порт в переменную окружения, если её нет - берем 10000
-        socketserver.TCPServer.allow_reuse_address = True
-        with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
-    httpd.serve_forever()
-# Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
+  # Render всегда дает порт в переменную окружения, если её нет - берем 10000
+import os
+port = int(os.environ.get("PORT", 10000))
+
+socketserver.TCPServer.allow_reuse_address = True
+with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
+                         httpd.serve_forever()
+Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
