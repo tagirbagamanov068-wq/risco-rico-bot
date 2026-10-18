@@ -20,7 +20,7 @@ port = int(os.environ.get("PORT", 10000))
 socketserver.TCPServer.allow_reuse_address = True
 with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
                          httpd.serve_forever()
-Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
+# Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
