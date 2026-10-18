@@ -14,10 +14,9 @@ def run_dummy_server():
             self.wfile.write(b"RISCO RICO FINTECH LIVE")
     
     # Render всегда дает порт в переменную окружения, если её нет - берем 10000
-    port = int(os.environ.get("PORT", 10000))
-    with socketserver.TCPServer(("", port), DummyHandler) as httpd:
-        httpd.serve_forever()
-
+        socketserver.TCPServer.allow_reuse_address = True
+        with socketserver.TCPServer(("0.0.0.0", port), DummyHandler) as httpd:
+    httpd.serve_forever()
 # Запускаем сайт-обманку в отдельном потоке, чтобы он не мешал боту
 threading.Thread(target=run_dummy_server, daemon=True).start()
 
