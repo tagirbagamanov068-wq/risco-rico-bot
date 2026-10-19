@@ -151,6 +151,36 @@ def final_step(call):
     )
     bot.send_message(chat_id, client_text, parse_mode="HTML")
 
-print("🚀 Бот RISCO RICO успешно запущен и караулит лиды!")
-bot.remove_webhook()
-bot.infinity_polling()
+import os, threading, time, requests
+from http.server import BaseHTTPRequestHandler, HTTPServer
+
+class WebhookServer(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.send_header("Content-type", "text/html")
+        self.end_headers()
+        self.wfile.write(b"RISCO RICO LIVE")
+
+def run_web_server():
+    try:
+        server = HTTPServer(('0.0.0.0', int(os.environ.get('PORT', 10000))), WebhookServer)
+        server.serve_forever()
+    except Exception:
+        pass
+
+def auto_pinger():
+    time.sleep(30)
+    while True:
+        try:
+                        requests.get("https://risco-rico-bot.onrender.com", timeout=10)
+
+
+        
+        except Exception:
+            pass
+        time.sleep(600)
+
+if __name__ == "__main__":
+    threading.Thread(target=run_web_server, daemon=True).start()
+    threading.Thread(target=auto_pinger, daemon=True).start()
+    bot.infinity_polling(allowed_updates=['message', 'callback_query'])
