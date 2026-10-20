@@ -8,9 +8,9 @@ import socketserver
 import os, http.server, socketserver, threading; threading.Thread(target=lambda: socketserver.TCPServer(("0.0.0.0", int(os.environ.get("PORT", 10000))), http.server.SimpleHTTPRequestHandler).serve_forever(), daemon=True).start()
 
 # ⚙️ НАСТРОЙКИ СИНДИКАТА RISCO RICO
-TOKEN = "8639002029:AAF9ZxXhc_MAUBQHz4eqUlwYZFhmCLx-TOs"
-ADMIN_ID = "8713500528"
 
+ADMIN_ID = "8713500528"
+TOKEN = os.environ.get("TOKEN")
 bot = telebot.TeleBot(TOKEN)
 user_data = {}
 
